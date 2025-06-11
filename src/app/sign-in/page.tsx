@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const roles = [
   { label: "Orang Tua", icon: "👨‍👩‍👧‍👦" },
@@ -10,10 +11,15 @@ const roles = [
 
 export default function RegisterPage() {
   const [selectedRole, setSelectedRole] = useState("Orang Tua");
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    router.push("/profilanak");
+  };
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Side */}
       <div className="w-1/2 bg-blue-200 flex flex-col justify-center items-center text-center px-8">
         <div className="bg-white rounded-full w-40 h-40 flex items-center justify-center shadow-md">
           <span className="text-6xl">😊</span>
@@ -22,11 +28,9 @@ export default function RegisterPage() {
         <p className="text-xl text-white mt-2">Teman untuk mengenal emosimu</p>
       </div>
 
-      {/* Right Side */}
       <div className="w-1/2 bg-white flex flex-col justify-center px-16">
         <h2 className="text-4xl font-bold text-blue-800 mb-8">Daftar</h2>
 
-        {/* Role Selection */}
         <div className="flex gap-4 mb-6">
           {roles.map((role) => (
             <button
@@ -44,8 +48,7 @@ export default function RegisterPage() {
           ))}
         </div>
 
-        {/* Form */}
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Nama <span className="text-red-500">*</span>
@@ -79,6 +82,7 @@ export default function RegisterPage() {
               placeholder="Kata Sandi"
               className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
               required
+              minLength={8}
             />
             <p className="text-xs text-gray-500 mt-1">Minimal 8 Karakter</p>
           </div>

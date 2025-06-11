@@ -1,15 +1,20 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function Page() {
   const [selectedAvatar, setSelectedAvatar] = useState<number | null>(null)
   const [autism, setAutism] = useState(false)
   const [adhd, setAdhd] = useState(false)
+  const router = useRouter()
+
+  const handleSubmit = () => {
+    router.push("/preferensisensorik")
+  }
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Side - Full blue background */}
       <div className="flex-1 bg-blue-300 flex flex-col items-center justify-center p-8">
         <div className="w-48 h-48 bg-white rounded-full flex items-center justify-center mb-8">
           <span className="text-6xl">😊</span>
@@ -18,13 +23,11 @@ export default function Page() {
         <p className="text-xl text-white">Teman untuk mengenal emosimu</p>
       </div>
 
-      {/* Right Side */}
       <div className="flex-1 bg-white flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <h2 className="text-2xl font-semibold text-gray-700 mb-8">Profil Anak</h2>
 
           <div className="space-y-6">
-            {/* Nama Anak */}
             <div>
               <label className="text-gray-600 text-sm mb-2 block">Nama Anak *</label>
               <input
@@ -34,7 +37,6 @@ export default function Page() {
               />
             </div>
 
-            {/* Usia */}
             <div>
               <label className="text-gray-600 text-sm mb-2 block">Usia *</label>
               <input
@@ -44,7 +46,6 @@ export default function Page() {
               />
             </div>
 
-            {/* Pilih Avatar */}
             <div>
               <label className="text-gray-600 text-sm mb-3 block">Pilih Avatar</label>
               <div className="flex gap-4 justify-center">
@@ -60,13 +61,12 @@ export default function Page() {
                     {index === 0 && "👦🏻"}
                     {index === 1 && "👧🏻"}
                     {index === 2 && "👦🏽"}
-                    {index === 3 && "👴🏻"}
+                    {index === 3 && "👶🏻"}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Kondisi */}
             <div>
               <label className="text-gray-600 text-sm mb-4 block">Kondisi</label>
 
@@ -105,8 +105,10 @@ export default function Page() {
               </div>
             </div>
 
-            {/* Masuk Button */}
-            <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 mt-8 rounded-md font-medium transition-colors">
+            <button
+              onClick={handleSubmit}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 mt-8 rounded-md font-medium transition-colors"
+            >
               Masuk
             </button>
           </div>
