@@ -38,6 +38,7 @@ export default function PemicuMood() {
   ]
 
   return (
+    
     <div className="min-h-screen bg-gradient-to-r from-blue-300 to-blue-100">
       <div className="flex">
         <div className="w-1/2 flex flex-col items-center justify-center p-8">

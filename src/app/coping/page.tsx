@@ -3,15 +3,16 @@
 import { Navbar } from '@/components/Navbar';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function CopingPage() {
   const [scale, setScale] = useState(1);
+  const router = useRouter();
 
   useEffect(() => {
     const interval = setInterval(() => {
       setScale((prev) => (prev === 1 ? 1.5 : 1));
-    }, 4000); 
-
+    }, 4000);
     return () => clearInterval(interval);
   }, []);
 
@@ -20,18 +21,22 @@ export default function CopingPage() {
       emoji: null,
       label: 'Latihan Pernapasan',
       type: 'circle',
+      onClick: () => {}, // kosong dulu
     },
     {
       emoji: '🌊',
       label: 'Suara Alam',
+      onClick: () => {}, // kosong dulu
     },
     {
       emoji: '🧘‍♂️',
       label: 'Istirahat Sensorik',
+      onClick: () => router.push('/sensorik'),
     },
     {
       emoji: '📝',
       label: 'Ekspresikan Perasaanmu',
+      onClick: () => router.push('/ekspresikan'),
     },
   ];
 
@@ -46,7 +51,8 @@ export default function CopingPage() {
           {copingItems.map((item, idx) => (
             <div
               key={idx}
-              className="bg-blue-100 text-black text-center py-8 rounded-xl shadow-md text-lg font-medium flex flex-col items-center justify-center"
+              className="bg-blue-100 text-black text-center py-8 rounded-xl shadow-md text-lg font-medium flex flex-col items-center justify-center cursor-pointer hover:bg-blue-200 transition"
+              onClick={item.onClick}
             >
               {item.type === 'circle' ? (
                 <div

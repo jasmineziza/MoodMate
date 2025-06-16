@@ -22,7 +22,7 @@ export const HomeButton = ({ isActive }: HomeButtonProps) => {
         }}
         className="text-sm font-medium"
       >
-        Rumah
+        Beranda 
       </motion.span>
     </Link>
   );

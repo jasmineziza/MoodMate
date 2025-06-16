@@ -7,9 +7,20 @@ export default function Page() {
   const [selectedAvatar, setSelectedAvatar] = useState<number | null>(null)
   const [autism, setAutism] = useState(false)
   const [adhd, setAdhd] = useState(false)
+  const [name, setName] = useState("")
+  const [age, setAge] = useState("")
   const router = useRouter()
 
   const handleSubmit = () => {
+    // Simpan data ke localStorage
+    localStorage.setItem("childProfile", JSON.stringify({
+      name,
+      age,
+      avatar: selectedAvatar,
+      autism,
+      adhd,
+    }))
+
     router.push("/preferensisensorik")
   }
 
@@ -33,7 +44,9 @@ export default function Page() {
               <input
                 type="text"
                 placeholder="Nama Anak"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
@@ -42,7 +55,9 @@ export default function Page() {
               <input
                 type="text"
                 placeholder="Usia"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 

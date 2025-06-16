@@ -17,6 +17,9 @@ export default function RegisterPage() {
     e.preventDefault();
     router.push("/profilanak");
   };
+  
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="min-h-screen flex">
@@ -56,7 +59,7 @@ export default function RegisterPage() {
             <input
               type="text"
               placeholder="Nama Lengkap"
-              className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="w-full border rounded-md px-4 py-2 text-black focus:outline-none focus:ring-2 focus:ring-blue-300"
               required
             />
           </div>
@@ -68,25 +71,35 @@ export default function RegisterPage() {
             <input
               type="email"
               placeholder={`Email ${selectedRole === "Orang Tua" ? "Orang Tua / Pengasuh" : selectedRole}`}
-              className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="w-full border rounded-md px-4 py-2 focus:outline-none text-black focus:ring-2 focus:ring-blue-300"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Kata Sandi <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="password"
-              placeholder="Kata Sandi"
-              className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-              required
-              minLength={8}
-            />
-            <p className="text-xs text-gray-500 mt-1">Minimal 8 Karakter</p>
-          </div>
-
+  <label className="block font-semibold text-gray-800 text-base tracking-wide">
+    Kata Sandi <span className="text-red-500">*</span>
+  </label>
+  <div className="relative mt-1">
+    <input
+      type={showPassword ? "text" : "password"}
+      placeholder="Kata Sandi"
+      className="w-full border border-gray-400 rounded-md px-4 py-2 pr-10 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      minLength={8}
+      required
+    />
+    <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-600"
+    >
+      
+    </button>
+  </div>
+  <p className="text-xs text-gray-500 mt-1">Minimal 8 karakter</p>
+</div>
           <button
             type="submit"
             className="w-full bg-blue-700 text-white py-2 rounded-md hover:bg-blue-800 transition font-semibold"

@@ -11,7 +11,6 @@ export default function Home() {
     { emoji: '📊', label: 'Statistik', path: '/stats' },
     { emoji: '💆🏻', label: 'Coping', path: '/coping' },
     { emoji: '🚨', label: 'Bantuan', path: '/help' },
-    { emoji: '👩🏻', label: 'Bantuan', path: '/profil' },
 
   ];
 
@@ -56,14 +55,14 @@ export default function Home() {
       <div className="flex flex-col items-center gap-8">
         {/* Baris 1: 3 item */}
         <div className="flex gap-16">
-          {menu.slice(0, 3).map((item, index) => (
+          {menu.slice(0, 2).map((item, index) => (
             <div
               key={index}
               onClick={() => router.push(item.path)}
               className="flex flex-col items-center cursor-pointer hover:scale-105 transition-transform"
             >
               <div className="w-32 h-32 rounded-full bg-gray-100 flex items-center justify-center shadow-md mb-2">
-                <span className="text-5xl">{item.emoji}</span>
+                <span className="text-6xl">{item.emoji}</span>
               </div>
               <span className="text-base font-medium text-gray-800">{item.label}</span>
             </div>
@@ -72,7 +71,7 @@ export default function Home() {
 
         {/* Baris 2: Sisa item */}
         <div className="flex gap-16">
-          {menu.slice(3).map((item, index) => (
+          {menu.slice(2, 4).map((item, index) => (
             <div
               key={index}
               onClick={() => router.push(item.path)}

@@ -1,143 +1,304 @@
-'use client';
+"use client"
 
-import { Navbar } from '@/components/Navbar';
-import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from "react"
+import { Navbar } from "@/components/Navbar"
+import { ChevronLeft, ChevronRight } from "lucide-react"
+import { Button } from "@/components/ui/Button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
+import { EmotionCircle } from "@/components/EmotionCircle"
+import { EmotionInput } from "@/components/EmotionInput"
+import { useEmotionState } from "@/hooks/useEmotionState"
+import { EMOTION_COLORS } from "@/utils/colorMixer"
 
-const moodColors: Record<string, string> = {
-  Senang: 'bg-green-100',
-  Sedih: 'bg-blue-100',
-  Marah: 'bg-red-100',
-  Takut: 'bg-purple-100',
-};
+type ViewType = "month" | "week" | "day"
 
-const emojiData = {
-  Senang: '😊',
-  Sedih: '😢',
-  Marah: '😠',
-  Takut: '😨',
-};
+const EMOTION_LABELS = {
+  senang: "Senang",
+  marah: "Marah",
+  sedih: "Sedih",
+  takut: "Takut",
+}
 
-const weeklyData = [
-  ['Senang', 'Sedih', 'Sedih', '', '', '', ''],
-  ['Sedih', 'Marah', 'Senang', 'Takut', 'Senang', 'Takut', ''],
-  ['Senang', 'Sedih', 'Marah', 'Sedih', 'Marah', 'Senang', 'Senang'],
-];
+const EMOTION_EMOJIS = {
+  senang: "😊",
+  marah: "😠",
+  sedih: "😢",
+  takut: "😨",
+}
 
-const recapData = {
-  Harian: [
-    { mood: 'Senang', count: 2 },
-    { mood: 'Marah', count: 1 },
-    { mood: 'Sedih', count: 1 },
-    { mood: 'Takut', count: 1 },
-  ],
-  Mingguan: [
-    { mood: 'Senang', count: 4 },
-    { mood: 'Sedih', count: 4 },
-    { mood: 'Marah', count: 2 },
-    { mood: 'Takut', count: 3 },
-  ],
-};
+export default function StatistikPage() {
+  const [currentView, setCurrentView] = useState<ViewType>("month")
+  const [selectedDate, setSelectedDate] = useState(new Date(2025, 0, 16))
+  const [selectedMonth, setSelectedMonth] = useState(new Date(2025, 0, 1))
 
-export default function StatsPage() {
-  const [mode, setMode] = useState<'Harian' | 'Mingguan'>('Harian');
+  const {
+    emotionState,
+    loading,
+    addEmotionEntry,
+    removeEmotionEntry,
+    getEmotionData,
+    getMonthData,
+    simulateEmotionInput,
+    loadSampleData,
+  } = useEmotionState()
 
-  const gridData = mode === 'Harian' ? [weeklyData[0]] : weeklyData;
+  // Load sample data on mount
+  useEffect(() => {
+    loadSampleData()
+  }, [loadSampleData])
+
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
+  }
+
+  const handleDateClick = (date: number) => {
+    const newDate = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth(), date)
+    setSelectedDate(newDate)
+    setCurrentView("day")
+  }
+
+  const navigateMonth = (direction: "prev" | "next") => {
+    const newMonth = new Date(selectedMonth)
+    if (direction === "prev") {
+      newMonth.setMonth(selectedMonth.getMonth() - 1)
+    } else {
+      newMonth.setMonth(selectedMonth.getMonth() + 1)
+    }
+    setSelectedMonth(newMonth)
+  }
+
+  const navigateDay = (direction: "prev" | "next") => {
+    const newDate = new Date(selectedDate)
+    if (direction === "prev") {
+      newDate.setDate(selectedDate.getDate() - 1)
+    } else {
+      newDate.setDate(selectedDate.getDate() + 1)
+    }
+    setSelectedDate(newDate)
+  }
+
+  // Get current day data
+  const currentDayData = getEmotionData(selectedDate.toISOString().split("T")[0])
 
   return (
-    <div className="flex flex-col min-h-screen bg-white relative overflow-hidden">
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <main className="flex-grow p-6 z-10">
-        <h1 className="text-3xl font-bold text-blue-700 text-center mb-6">Riwayat Emosi</h1>
 
-        {/* Tombol toggle */}
-        <div className="flex justify-center gap-4 mb-6">
-          <button
-            className={`px-4 py-1 rounded-full font-medium ${
-              mode === 'Mingguan' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
-            }`}
-            onClick={() => setMode('Mingguan')}
-          >
-            Mingguan
-          </button>
-          <button
-            className={`px-4 py-1 rounded-full font-medium ${
-              mode === 'Harian' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
-            }`}
-            onClick={() => setMode('Harian')}
-          >
-            Harian
-          </button>
-        </div>
-
-        {/* Grid emosi */}
-        <div className={`grid ${mode === 'Mingguan' ? 'grid-rows-3' : 'grid-rows-1'} grid-cols-7 gap-3 mb-6`}>
-          {gridData.flat().map((mood, idx) => (
-            <div
-              key={idx}
-              className={`h-20 w-full flex items-center justify-center rounded-xl text-2xl font-bold ${
-                moodColors[mood] || 'bg-gray-100'
-              }`}
+      <div className="container mx-auto px-4 py-6 max-w-md">
+        {/* Header dengan navigasi view */}
+        <div className="flex justify-center mb-6">
+          <div className="flex bg-white rounded-lg p-1 shadow-sm border border-gray-200">
+            <Button
+              variant={currentView === "month" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setCurrentView("month")}
+              className="text-xs"
             >
-              {emojiData[mood] || ''}
-            </div>
-          ))}
-        </div>
-
-        {/* Label legenda */}
-        <div className="flex justify-center gap-4 mb-10">
-          {Object.entries(emojiData).map(([mood, emoji]) => (
-            <div key={mood} className="flex items-center gap-1 text-sm">
-              <div className={`w-4 h-4 rounded-full ${moodColors[mood]}`}></div>
-              <span>{mood}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Rekap */}
-        <h2 className="text-xl font-semibold text-blue-700 mb-4">
-          {mode === 'Harian' ? '📅 Rekap Harian' : '📈 Rekap Mingguan'}
-        </h2>
-
-        <div className={`grid ${mode === 'Harian' ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}>
-          {recapData[mode].map((item) => (
-            <div
-              key={item.mood}
-              className="flex items-center gap-4 p-4 rounded-xl bg-gray-100 shadow-sm"
+              Bulan
+            </Button>
+            <Button
+              variant={currentView === "week" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setCurrentView("week")}
+              className="text-xs"
             >
-              <div
-                className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl ${moodColors[item.mood]}`}
-              >
-                {emojiData[item.mood]}
-              </div>
-              <div>
-                <div className="font-semibold">{item.mood}</div>
-                <div className="text-sm text-gray-600">{item.count} kali</div>
-              </div>
-            </div>
-          ))}
+              Minggu
+            </Button>
+            <Button
+              variant={currentView === "day" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setCurrentView("day")}
+              className="text-xs"
+            >
+              Hari
+            </Button>
+          </div>
         </div>
-      </main>
 
-      {/* Background dekorasi */}
-      <div className="absolute -top-12 -left-10 z-0">
-        <Image
-          alt="star"
-          src="/images/Star-7.png"
-          width={300}
-          height={300}
-          className="object-contain"
-        />
-      </div>
-      <div className="absolute -bottom-20 -right-20 z-0">
-        <Image
-          alt="star"
-          src="/images/Star-7.png"
-          width={400}
-          height={400}
-          className="object-contain"
-        />
+        {/* Month View */}
+        {currentView === "month" && (
+          <Card className="mb-6">
+            <CardHeader className="text-center pb-4">
+              <CardTitle className="text-2xl font-bold text-blue-600">Kalender</CardTitle>
+              <div className="flex items-center justify-between mt-4">
+                <Button variant="ghost" size="sm" onClick={() => navigateMonth("prev")}>
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <span className="text-gray-600">
+                  {selectedMonth.toLocaleDateString("id-ID", { month: "long", year: "numeric" })}
+                </span>
+                <Button variant="ghost" size="sm" onClick={() => navigateMonth("next")}>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-7 gap-2 mb-4">
+                {["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"].map((day) => (
+                  <div key={day} className="text-center text-xs text-gray-500 py-2">
+                    {day}
+                  </div>
+                ))}
+              </div>
+              <div className="grid grid-cols-7 gap-2">
+                {Array.from({ length: 31 }, (_, i) => {
+                  const day = i + 1
+                  const dateString = `${selectedMonth.getFullYear()}-${String(selectedMonth.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+                  const emotionData = getEmotionData(dateString)
+
+                  return (
+                    <EmotionCircle
+                      key={day}
+                      day={day}
+                      emotionData={emotionData}
+                      onClick={handleDateClick}
+                      isSelected={
+                        selectedDate.getDate() === day && selectedDate.getMonth() === selectedMonth.getMonth()
+                      }
+                      showAnimation={true}
+                    />
+                  )
+                })}
+              </div>
+
+              {/* Real-time color legend */}
+              <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="text-xs text-gray-600 mb-2">Keterangan Warna Real-time:</div>
+                <div className="text-xs text-gray-500">
+                  • Warna berubah setiap kali Anda input emosi
+                  <br />• Gradasi = campuran emosi dalam satu hari
+                  <br />• Klik tanggal untuk input emosi
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Day View */}
+        {currentView === "day" && (
+          <>
+            {/* Emotion Input */}
+            <EmotionInput
+              selectedDate={selectedDate}
+              onEmotionAdd={addEmotionEntry}
+              onSimulateInput={simulateEmotionInput}
+            />
+
+            <Card className="mb-6">
+              <CardHeader className="text-center pb-4">
+                <CardTitle className="text-2xl font-bold text-blue-600">Riwayat Emosi</CardTitle>
+                <div className="flex items-center justify-between mt-4">
+                  <Button variant="ghost" size="sm" onClick={() => navigateDay("prev")}>
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <span className="text-gray-600">{formatDate(selectedDate)}</span>
+                  <Button variant="ghost" size="sm" onClick={() => navigateDay("next")}>
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center mb-6">
+                  <EmotionCircle
+                    day={selectedDate.getDate()}
+                    emotionData={currentDayData}
+                    onClick={() => {}}
+                    size="lg"
+                    showAnimation={true}
+                  />
+                </div>
+
+                {currentDayData && currentDayData.total > 0 ? (
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-semibold text-blue-600">Rekap Harian</h3>
+                    <div className="space-y-3">
+                      {Object.entries(EMOTION_LABELS).map(([emotion, label]) => {
+                        const count = currentDayData.emotionCounts[emotion as keyof typeof currentDayData.emotionCounts]
+                        const color = EMOTION_COLORS[emotion]
+                        const emoji = EMOTION_EMOJIS[emotion as keyof typeof EMOTION_EMOJIS]
+                        const percentage = currentDayData.total > 0 ? (count / currentDayData.total) * 100 : 0
+
+                        return (
+                          <div key={emotion} className="bg-gray-100 rounded-lg p-3 flex items-center space-x-3">
+                            <div
+                              className="w-10 h-10 rounded-full flex items-center justify-center text-xl"
+                              style={{ backgroundColor: `rgb(${color.r}, ${color.g}, ${color.b})` }}
+                            >
+                              {emoji}
+                            </div>
+                            <div className="flex-1">
+                              <div className="font-medium">{label}</div>
+                              <div className="text-sm text-gray-500">{count} kali</div>
+                            </div>
+                            {count > 0 && (
+                              <div className="text-right">
+                                <div className="text-xs text-gray-400">{percentage.toFixed(1)}%</div>
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+
+                    {/* Timeline of emotions */}
+                    <div className="mt-6">
+                      <h4 className="text-md font-semibold text-blue-600 mb-3">Timeline Emosi</h4>
+                      <div className="space-y-2">
+                        {currentDayData.emotions
+                          .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+                          .map((entry) => {
+                            const color = EMOTION_COLORS[entry.emotion]
+                            const emoji = EMOTION_EMOJIS[entry.emotion]
+                            const time = new Date(entry.timestamp).toLocaleTimeString("id-ID", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })
+
+                            return (
+                              <div
+                                key={entry.id}
+                                className="flex items-center space-x-3 p-2 bg-white rounded-lg border border-gray-200"
+                              >
+                                <div
+                                  className="w-8 h-8 rounded-full flex items-center justify-center text-lg"
+                                  style={{ backgroundColor: `rgb(${color.r}, ${color.g}, ${color.b})` }}
+                                >
+                                  {emoji}
+                                </div>
+                                <div className="flex-1">
+                                  <div className="font-medium capitalize">{entry.emotion}</div>
+                                  <div className="text-xs text-gray-500">{time}</div>
+                                </div>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => removeEmotionEntry(currentDayData.date, entry.id)}
+                                  className="text-red-500 hover:text-red-700"
+                                >
+                                  ✕
+                                </Button>
+                              </div>
+                            )
+                          })}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center text-gray-500 py-8">
+                    <div className="text-4xl mb-2">😐</div>
+                    <div>Belum ada emosi tercatat hari ini</div>
+                    <div className="text-sm">Tambahkan emosi pertama Anda!</div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </>
+        )}
       </div>
     </div>
-  );
+  )
 }
