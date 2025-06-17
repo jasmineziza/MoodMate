@@ -15,7 +15,7 @@ export const Navbar = () => {
     { path: '/stats', Button: StatsButton },
     { path: '/coping', Button: CopingButton },
     { path: '/help', Button: HelpButton },
-    { path: '/',  Button: HomeButton },
+    { path: '/homepage',  Button: HomeButton },
   ];
 
   return (
