@@ -9,7 +9,7 @@ interface HomeButtonProps {
 
 export const HomeButton = ({ isActive }: HomeButtonProps) => {
   return (
-    <Link href="/" className="flex flex-col items-center gap-2">
+    <Link href="/homepage" className="flex flex-col items-center gap-2">
       <div className={`flex justify-center items-center w-14 h-14 rounded-full ${ 
           isActive ? 'bg-green-100' : 'bg-gray-100'} `}>
         <p className='text-3xl'>🏠</p>

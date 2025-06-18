@@ -2,7 +2,6 @@
 "use client";
 
 import { Navbar } from "@/components/Navbar";
-import Image from "next/image";
 
 export default function SensorikPage() {
   return (
@@ -16,13 +15,9 @@ export default function SensorikPage() {
           Arahkan perhatianmu pada inderamu. Matikan notifikasi. Perhatikan suara,
           tekstur benda, atau aroma di sekitarmu. Nikmati sesaat istirahat ini.
         </p>
-        <Image
-          src="/images/sensorik.png"
-          alt="Sensorik"
-          width={300}
+        <iframe width={300}
           height={300}
-          className="mx-auto mb-4"
-        />
+          className="mx-auto mb-4" src="https://www.youtube.com/embed/SCWtZihkAE8?si=EMLzJyUC3bsU3Z6m" title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         <p className="text-gray-500">Coba pejamkan mata selama 1 menit dan fokus pada napasmu...</p>
       </main>
     </div>
