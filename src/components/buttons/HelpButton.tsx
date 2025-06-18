@@ -12,7 +12,7 @@ export const HelpButton = ({ isActive }: HelpButtonProps) => {
     <Link href="/help" className="flex-1 flex flex-col items-center gap-1">
       <div className={`flex justify-center items-center w-14 h-14 rounded-full ${ 
           isActive ? 'bg-red-100' : 'bg-gray-100'} `}>
-        <p className='text-3xl'>🚨</p>
+        <p className='text-3xl'>🆘</p>
       </div>
 
       <motion.span

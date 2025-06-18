@@ -70,7 +70,7 @@ export default function PreferensiSensorik() {
           {/* Tombol Navigasi */}
           <div className="flex space-x-4">
             <button
-              onClick={() => router.push("/")}
+              onClick={() => router.push("/profilanak")}
               className="flex-1 py-3 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50"
             >
               Kembali
